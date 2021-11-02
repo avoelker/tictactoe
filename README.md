@@ -18,5 +18,4 @@ Requirements:
 * This has been tested on Windows 10 Pro with .NET 5.0 SDK installed.
 
 Bugs:
-* The computer A.I. Minimax algorithm has a recursion problem, so
-  instead a random move is performed, until this is fixed.
+* The computer A.I. Minimax algorithm has a recursion problem, so the computer does a simple random move until fixed.
