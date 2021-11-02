@@ -15,6 +15,3 @@ Requirements:
 Bugs:
 * The computer A.I. Minimax algorithm has a recursion problem, so
   instead a random move is performed, until this is fixed.
-
-License:
-MIT License.
