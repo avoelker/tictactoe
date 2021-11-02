@@ -2,6 +2,7 @@
 
 Description:
 * This is a text version of the classic game.
+* How to PLay Tic-Tac-Toe: https://www.thesprucecrafts.com/tic-tac-toe-game-rules-412170
 
 Features:
 * The grid starts as 3x3, but you can change this up to 20x20.

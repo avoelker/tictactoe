@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-// How to PLay Tic-Tac-Toe:
-// https://www.thesprucecrafts.com/tic-tac-toe-game-rules-412170
-
 namespace tictactoe
 {
     public class MoveScore
