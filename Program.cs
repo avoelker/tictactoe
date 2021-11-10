@@ -2,7 +2,7 @@
 
 namespace tictactoe
 {
-    public enum GameState
+    public enum ProgramState
     {
         Running,
         Quitting,
@@ -19,12 +19,26 @@ namespace tictactoe
     {
         static void Main(string[] args)
         {
-            new Game().GameLoop();
+            // RUN GAME LOOP
+
+            try
+            {
+                new Game().GameLoop();
+            }
+            catch (Exception e)
+            {
+                if (e.Source != null)
+                {
+                    Console.WriteLine("Exception Thrown:");
+                    Console.WriteLine(e.StackTrace);
+                }
+            }
         }
 
         public static string CenterString(string s, int width)
         {
-            // center align a string
+            // UTILITY FUNCTION : center align a string
+
             if (s.Length >= width)
             {
                 return s;
@@ -37,14 +51,20 @@ namespace tictactoe
 
     public partial class Game
     {
-        GameState   gameState = GameState.Running;
-        Player      activePlayer = Player.X;
-        Player      humanPlayer = Player.X;     // default human goes first, in the first game
-        Player      computerPlayer = Player.O;
-        bool        newGame = true;
-        int         priorComputerMove = 0;      // last move by computer player
-        int         size = 3;                   // default is 3x3 grid
-        Board       board;
+        // ENCAPSULATES PROCESSING THE GAME
+
+        // compile constants
+        static bool     useAI = false;                      // false = computer player selects random move
+        static bool     humanStartsFirstInitially = true;   // false = computer player starts first initially
+        static bool     loserStartsFirstNextGame = false;   // false = don't change player who starts first
+
+        ProgramState    programState = ProgramState.Running;
+        Board           board;                              // current state of game
+        Player          activePlayer = Player.Undefined;
+        Player          humanPlayer = humanStartsFirstInitially ? Player.X : Player.O;
+        Player          computerPlayer = humanStartsFirstInitially ? Player.O : Player.X;
+        int             priorHumanMove = 0;                 // prior move (cell number) of human player
+        int             priorComputerMove = 0;              // prior move (cell numbrer) of computer player
         
         public void GameLoop()
         {
@@ -52,15 +72,15 @@ namespace tictactoe
 
             while (true)
             {
-                if (gameState == GameState.Quitting)
+                if (programState == ProgramState.Quitting)
                 {
                     break;      // exit the loop
                 }
-                else if (gameState == GameState.ChangingBoardSize)
+                else if (programState == ProgramState.ChangingBoardSize)
                 {
                     ChangeBoardSize();
                 }
-                else    // if (gameState == GameState.Running)
+                else    // if (programState == ProgramState.Running)
                 {
                     // print the state of the game
                     board.Print();
@@ -81,20 +101,28 @@ namespace tictactoe
                         {
                             Console.WriteLine("The game is a draw!");
                             Console.WriteLine();
+                            if (loserStartsFirstNextGame)
+                            {
+                                // next game, computer goes first
+                                computerPlayer = Player.X;
+                                humanPlayer = Player.O;
+                            }
                         }
                         else if (gameWinner == humanPlayer)
                         {
                             Console.WriteLine("You won!");
                             Console.WriteLine();
-                            computerPlayer = Player.X;      // next game, loser goes first
-                            humanPlayer = Player.O;
+                            if (loserStartsFirstNextGame)
+                            {
+                                // next game, human goes first
+                                humanPlayer = Player.X;
+                                computerPlayer = Player.O;
+                            }
                         }
                         else
                         {
                             Console.WriteLine("The Computer won!");
                             Console.WriteLine();
-                            humanPlayer = Player.X;         // next game, loser goes first
-                            computerPlayer = Player.O;
                         }
                         Console.Write("Press Enter to play again.");
                         Console.ReadLine();
@@ -107,7 +135,8 @@ namespace tictactoe
                         // process human input/move
                         if (HumanMove())
                         {
-                            activePlayer = computerPlayer;      // next move by computer
+                            // next move by computer player
+                            activePlayer = computerPlayer;
                         }
                     }
                     else
@@ -115,7 +144,8 @@ namespace tictactoe
                         // process computer move
                         if (ComputerMove())
                         {
-                            activePlayer = humanPlayer;         // next move by human
+                            // next move by human player
+                            activePlayer = humanPlayer;
                         }
                     }
                 }
@@ -124,9 +154,14 @@ namespace tictactoe
 
         void ChangeBoardSize()
         {
+            // process user changing size of board
+
             // prompt for user input
             int         minSize = Board.minGridSize;
             int         maxSize = Board.maxGridSize;
+            int         size = board.GetSize();
+
+            Console.WriteLine();
             Console.WriteLine($"The board size is currently: {size}x{size}.");
             Console.Write($"Enter new board size ({minSize}-{maxSize}): ");
             
@@ -141,16 +176,26 @@ namespace tictactoe
                     size = newSize;
                     StartNewGame();
                 }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid board size.");
+                    Console.Write("Press Enter to resume game.");
+                    Console.ReadLine();
+                }
             }
 
             // resume running game loop
-            gameState = GameState.Running;
+            programState = ProgramState.Running;
         }
 
         void StartNewGame()
         {
-            board = new Board(size);
-            newGame = true;
+            // reset to a new game
+            board = new Board(board is not null ? board.GetSize() : Board.minGridSize);
+            activePlayer = Player.X;        // X always goes first
+            priorHumanMove = 0;             // human has not acted
+            priorComputerMove = 0;          // computer has not acted
         }
     }
 }

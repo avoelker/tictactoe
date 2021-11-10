@@ -5,6 +5,8 @@ namespace tictactoe
 {
     public class MoveScore
     {
+        // ENCAPSULATES A MOVE (CELL NUMBER) WITH IT'S CALCULATED SCORE
+        
         public const int    MinScore = -1000;
         public const int    NeutralScore = 0;
         public const int    MaxScore = 1000;
@@ -31,12 +33,16 @@ namespace tictactoe
 
     public partial class Game
     {
+        // ENCAPSULATES COMPUTER MOVE LOGIC
+
         bool ComputerMove()
         {
+            // process computer player move
+
             // returns true if valid move made
             bool        validMove = false;
 
-            int         cellNumber = GetNextMove(false);
+            int         cellNumber = GetNextMove();
             validMove = board.MakeMove(computerPlayer, cellNumber);
             if (validMove)
             {
@@ -52,9 +58,10 @@ namespace tictactoe
             return validMove;
         }
 
-        int GetNextMove(bool useAI)
+        int GetNextMove()
         {
             // returns best cellNumber to move to next
+
             if (useAI)
             {
                 // Minimax calculated move, from remaining squares
@@ -67,13 +74,14 @@ namespace tictactoe
             }
         }
 
-        public static int   TEMP_Minimax_count = 0;
+        public static int   minimaxFunctionCount = 0;
 
-        public MoveScore Minimax(Board curBoard, Player curPlayer)
+        public MoveScore Minimax(Board curBoard, Player curPlayer, int depth = 0)
         {
-            // returns best move available
-            TEMP_Minimax_count++;
-            System.Console.WriteLine($"Minimax calls: {TEMP_Minimax_count}");
+            // returns best move available, using minimax algorithm
+
+            minimaxFunctionCount++;
+            System.Console.WriteLine($"Minimax COUNT: {minimaxFunctionCount}, DEPTH: {depth}");
             
             // return score, if at end of game
             Player      winner = curBoard.CheckWinner();
@@ -101,12 +109,12 @@ namespace tictactoe
                 if (curPlayer == computerPlayer)
                 {
                     // recurse follow-on human moves
-                    moveScoresList.Add(new MoveScore(cellNumber, Minimax(moveBoard, humanPlayer).GetScore()));
+                    moveScoresList.Add(new MoveScore(cellNumber, Minimax(moveBoard, humanPlayer, depth + 1).GetScore()));
                 }
                 else // if (curPlayer == humanPlayer)
                 {
                     // recurse follow-on computer moves
-                    moveScoresList.Add(new MoveScore(cellNumber, Minimax(moveBoard, computerPlayer).GetScore()));
+                    moveScoresList.Add(new MoveScore(cellNumber, Minimax(moveBoard, computerPlayer, depth + 1).GetScore()));
                 }
             }
             MoveScore[]     moveScores = moveScoresList.ToArray();
@@ -127,7 +135,7 @@ namespace tictactoe
                     }
                 }
             }
-            else // if curPlayer == humanPlayer)
+            else // if (curPlayer == humanPlayer)
             {
                 // the best move of the human results in the lowest score
                 int         lowestScore = MoveScore.MaxScore;

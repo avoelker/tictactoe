@@ -6,6 +6,8 @@ namespace tictactoe
 {
     public class Board
     {
+        // ENCAPSULATES STATE OF GAME BOARD
+
         public const int    minGridSize = 3;
         public const int    maxGridSize = 20;
         private bool        gameOver = false;
@@ -15,6 +17,8 @@ namespace tictactoe
         
         public Board(int gridSize)
         {
+            // constructor, creates default new Board
+
             if (gridSize < minGridSize)
             {
                 gridSize = minGridSize;
@@ -29,6 +33,8 @@ namespace tictactoe
 
         public Board(Board other)
         {
+            // constructor, clones passed-in Board
+
             gameOver = other.gameOver;
             gameWinner = other.gameWinner;
             size = other.size;
@@ -44,6 +50,8 @@ namespace tictactoe
 
         public void Reset()
         {
+            // reset Board to initial state
+
             gameOver = false;
             gameWinner = Player.Undefined;
             board = new Player[size,size];
@@ -58,18 +66,24 @@ namespace tictactoe
 
         public void SetSize(int gridSize)
         {
+            // change size of board grid
+
             size = gridSize;
             Reset();
         }
 
         public int GetSize()
         {
+            // get size of board grid
+
             return size;
         }
 
 
         public bool MakeMove(Player player, int cellNumber)
         {
+            // process move (cell number) of a player (human or computer)
+
             // returns false, if cell already taken
             int         r = (cellNumber-1) / size;
             int         c = (cellNumber-1) % size;
@@ -83,7 +97,8 @@ namespace tictactoe
 
         public int[] GetAvailableMoves()
         {
-            // returns list of all available moves
+            // return list of all available moves (cell numbers)
+
             List<int>   moves = new List<int>();
             for (int r = 0; r < size; r++)
             {
@@ -100,19 +115,24 @@ namespace tictactoe
 
         public int GetRandomAvailableMove()
         {
-            // returns cell number of randomly selected available cell (1 to size*size)
+            // return a random selected move (cell number) from all available
+
             int[]       moves = GetAvailableMoves();
             return moves[new Random().Next(moves.Length)];
         }
 
         public Player GetWinner()
         {
+            // return winning player (if set, otherwise it will be Player.Undefined)
+
             // btw, a draw is when (gameOver && gameWinner == Player.Undefined)
             return gameWinner;
         }
 
         public bool CheckGameOver()
         {
+            // determine if the game is over (a winner or draw is set)
+
             if (! gameOver)
             {
                 Player      winner = CheckWinner();
@@ -132,7 +152,8 @@ namespace tictactoe
 
         public Player CheckWinner()
         {
-            // returns winner or Player.Undefined for no winner yet
+            // return the winning player, or Player.Undefined if not over or a draw
+
             Player      winner = CheckHorizWinner();
             if (winner == Player.Undefined)
             {
@@ -151,7 +172,8 @@ namespace tictactoe
 
         private Player CheckHorizWinner()
         {
-            // return horizontal winner
+            // return winning player, if game over with horizontal win
+
             Player      player;
             for (int r = 0; r < size; r++)
             {
@@ -178,7 +200,8 @@ namespace tictactoe
 
         private Player CheckVertWinner()
         {
-            // return vertical winner
+            // return winning player, if game over with vertical win
+            
             Player      player;
             for (int c = 0; c < size; c++)
             {
@@ -205,7 +228,8 @@ namespace tictactoe
 
         private Player CheckDiagLRWinner()
         {
-            // return diagonal (top-left to bottom-right) winner
+            // return winning player, if game over with diagonal (top-left to bottom-right) win
+            
             Player      player = board[0,0];
             if (player != Player.Undefined)
             {
@@ -228,7 +252,8 @@ namespace tictactoe
         
         private Player CheckDiagRLWinner()
         {
-            // return diagonal (top-right to bottom-left)  winner
+            // return winning player, if game over with diagonal (top-right to bottom-left) win
+            
             Player      player = board[0,size-1];
             if (player != Player.Undefined)
             {
@@ -251,7 +276,8 @@ namespace tictactoe
 
         public bool CheckNoMovesRemaining()
         {
-            // return true if no moves are remaining 
+            // return true, when all cells have been taken
+
             for (int r = 0; r < size; r++)
             {
                 for (int c = 0; c < size; c++)
@@ -267,6 +293,8 @@ namespace tictactoe
 
         public void Print()
         {
+            // print board grid, in text characters
+
             const int   cellWidth = 7;
             string      topLine = new string('_', (cellWidth+1)*size-1);
             string      cellDivider = new string('_', cellWidth);
@@ -276,10 +304,13 @@ namespace tictactoe
             
             try
             {
+                // when debugging, vscode is unhappy with this
                 Console.Clear();
             }
             catch{}
-            Console.WriteLine($"Tic Tac Toe (Player vs Computer, {size}x{size}):\n");
+
+            Console.WriteLine($"Tic Tac Toe (Player vs Computer, {size}x{size}):");
+            Console.WriteLine();
             Console.WriteLine($" {topLine}");
             int cellNumber = 1;
             for (int r = 0; r < size; r++)

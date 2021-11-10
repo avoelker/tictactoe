@@ -4,12 +4,16 @@ namespace tictactoe
 {
     public partial class Game
     {
+        // ENCAPSULATES HUMAN MOVE LOGIC
+        
         bool HumanMove()
         {
+            // process human player move
+
             // returns true if valid move made
             bool        validMove = false;
 
-            if (newGame)
+            if (priorHumanMove == 0)
             {
                 // inform user a new game has started
                 if (humanPlayer == Player.X)
@@ -43,12 +47,12 @@ namespace tictactoe
                 string  input = Console.ReadLine().Trim();
                 if (input.Equals("Q", StringComparison.OrdinalIgnoreCase))
                 {
-                    gameState = GameState.Quitting;
+                    programState = ProgramState.Quitting;
                     break;
                 }
                 else if (input.Equals("C", StringComparison.OrdinalIgnoreCase))
                 {
-                    gameState = GameState.ChangingBoardSize;
+                    programState = ProgramState.ChangingBoardSize;
                     break;
                 }
                 else
@@ -63,12 +67,12 @@ namespace tictactoe
                         {
                             Console.WriteLine($"That square is already taken.");
                         }
+                        else
+                        {
+                            priorHumanMove = cellNumber;
+                        }
                     }
                 }
-            }
-            if (validMove)
-            {
-                newGame = false;
             }
 
             return validMove;
