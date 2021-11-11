@@ -81,8 +81,8 @@ namespace tictactoe
             // returns best move available, using minimax algorithm
 
             minimaxFunctionCount++;
-            System.Console.WriteLine($"Minimax COUNT: {minimaxFunctionCount}, DEPTH: {depth}");
-            
+            // System.Console.WriteLine($"Minimax COUNT: {minimaxFunctionCount}, DEPTH: {depth}");
+
             // return score, if at end of game
             Player      winner = curBoard.CheckWinner();
             if (winner == computerPlayer)

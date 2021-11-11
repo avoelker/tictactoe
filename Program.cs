@@ -54,7 +54,7 @@ namespace tictactoe
         // ENCAPSULATES PROCESSING THE GAME
 
         // compile constants
-        static bool     useAI = false;                      // false = computer player selects random move
+        static bool     useAI = true;                       // false = computer player selects random move
         static bool     humanStartsFirstInitially = true;   // false = computer player starts first initially
         static bool     loserStartsFirstNextGame = false;   // false = don't change player who starts first
 
@@ -173,8 +173,19 @@ namespace tictactoe
                 if (newSize >= minSize && newSize <= maxSize)
                 {
                     // update the board size, and start a new game
-                    size = newSize;
-                    StartNewGame();
+                    if (size != newSize)
+                    {
+                        size = newSize;
+                        board.SetSize(size);
+                        StartNewGame();
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Board size not changed.");
+                        Console.Write("Press Enter to resume game.");
+                        Console.ReadLine();
+                    }
                 }
                 else
                 {
